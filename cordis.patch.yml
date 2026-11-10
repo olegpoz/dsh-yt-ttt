@@ -1,0 +1,33 @@
+# Bundle layer for dsh-yt-ttt — Yandex Tracker "Time Tracked Today".
+#
+# The row is inserted without config on purpose: every runtime setting is
+# editable from the plugin's own settings windows (the gear in the panel and in
+# the add form). Those windows keep the runtime values in the profile storage
+# and put the Tracker token and the Yandex Calendar app password into the
+# profile credential store.
+#
+# The config below only seeds non-secret values for a profile that prefers to
+# declare them. A matching profile override replaces this whole config, so
+# restate every field you need there:
+#
+# - id: yandex-tracker-today
+#   name: 'dsh-yt-ttt'
+#   config:
+#     orgId: '123456'                  # Yandex 360 org id    -> X-Org-ID
+#     cloudOrgId: 'cloud-org-id'       # Yandex Cloud org id  -> X-Cloud-Org-ID
+#     login: 'name'                    # optional; resolved from /myself when empty
+#     timeZone: 'Europe/Moscow'        # optional; host zone when empty
+#     defaultQueue: 'MYQUEUE'          # optional; digits-only key -> MYQUEUE-<digits>
+#     workdayEnd: '18:00'              # optional; working-day end for the add form
+#     calendarLogin: 'user@example.com'  # optional; Yandex Calendar CalDAV login
+#     calendarUrl: 'https://caldav.yandex.ru'                 # optional
+#     apiBase: 'https://api.tracker.yandex.net/v3'            # optional
+#     webBase: 'https://tracker.yandex.ru'                    # optional
+#
+# `token` and `calendarPassword` are deliberately absent: a secret written here
+# is ignored, because this file is the one that gets copied between machines and
+# committed to a repository. Both secrets are entered in the settings window and
+# kept in the profile credential store.
+- insert:
+    - id: yandex-tracker-today
+      name: 'dsh-yt-ttt'

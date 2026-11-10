@@ -1,0 +1,35 @@
+# Example configuration for the dsh-yt-ttt bundle row.
+#
+# This file is documentation, not a loaded patch: copy the block into your
+# profile's cordis.patch.yml only if you prefer declaring values in YAML.
+# The normal path is the plugin's settings windows, which keep every value in
+# the profile storage.
+#
+# Secrets are intentionally not part of this file. The Tracker token and the
+# Yandex Calendar app password are entered in the settings window and kept in
+# the profile credential store; a secret written here is ignored, because a
+# config file is the thing that gets copied, shared and committed.
+#
+# A profile override replaces the bundle row's whole config, so restate every
+# field you need here.
+- id: yandex-tracker-today
+  name: 'dsh-yt-ttt'
+  config:
+    # One of the two organization identifiers, whichever the account uses.
+    orgId: '123456'
+    # cloudOrgId: 'b1gexample0organizationid'
+    # Optional. Resolved from /myself when empty.
+    login: 'example-user'
+    # Optional. IANA zone deciding what "today" means; the host zone when empty.
+    timeZone: 'Europe/Moscow'
+    # Optional. A digits-only task key is expanded with this queue (`426` ->
+    # `MYQUEUE-426`).
+    defaultQueue: 'MYQUEUE'
+    # Optional. End of the working day used by the add form.
+    workdayEnd: '18:00'
+    # Optional. Yandex Calendar CalDAV access, used for the event list.
+    calendarLogin: 'user@example.com'
+    # Optional overrides of the API endpoints.
+    # calendarUrl: 'https://caldav.yandex.ru'
+    # apiBase: 'https://api.tracker.yandex.net/v3'
+    # webBase: 'https://tracker.yandex.ru'

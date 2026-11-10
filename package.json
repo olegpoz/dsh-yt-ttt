@@ -1,0 +1,62 @@
+{
+  "name": "dsh-yt-ttt",
+  "version": "1.0.0",
+  "description": "Time Tracked Today: shows today's tracked time in Yandex Tracker in the sidebar rail, opens a panel with today's and yesterday's totals and worklogs, and adds new time entries from that panel.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Oleg Pozdnyakov",
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "yandex-tracker",
+    "time-tracking",
+    "worklog",
+    "ttt"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/olegpoz/dsh-yt-ttt.git"
+  },
+  "homepage": "https://github.com/olegpoz/dsh-yt-ttt#readme",
+  "bugs": {
+    "url": "https://github.com/olegpoz/dsh-yt-ttt/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "config.example.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md",
+    "README.en.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar"
+      ]
+    }
+  }
+}

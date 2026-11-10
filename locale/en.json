@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Yandex Tracker: tracked time",
+    "description": "Shows today's tracked time in Yandex Tracker at the top of the sidebar rail, turning green once 8 hours are reached; clicking the row opens a panel with today's and yesterday's totals and either day's worklogs, padded out to the 09:00-18:00 working day, plus an Add button for logging new time against an issue."
+  }
+}
