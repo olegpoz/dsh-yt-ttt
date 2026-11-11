@@ -77,6 +77,8 @@ Once published to npm, installation becomes `pnpm add dsh-yt-ttt` plus one line 
 
 The main path is the **settings window**: the gear in the panel and the gear in the "Adding time" form. Values are saved in the profile and apply immediately, no restart needed. **Test connection** in the same window checks both connections against the saved values.
 
+![The plugin settings window: panel, Tracker and Calendar connections](docs/settings.png)
+
 ### Connecting Yandex Tracker
 
 Three things are needed: the organization id, an OAuth token and, optionally, the login.
