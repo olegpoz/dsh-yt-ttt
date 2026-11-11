@@ -8,6 +8,20 @@
 
 The plugin shows how much time you have already logged today in the sidebar rail and, on click, opens a panel with today's and yesterday's totals, the worklog list, and a form for logging new time — without switching to the browser.
 
+## How it works
+
+It is not a separate app and there is no build step: two halves in plain JavaScript plus a configuration layer.
+
+- **Host half** (`index.js`) runs inside the DeepSeek Harness process: it registers the plugin's authenticated Web routes, calls the Tracker API and Calendar CalDAV, and keeps the settings and the caches.
+- **Browser half** (`client.js`) is a single module the page loads through `window.__ModuleLoader__`; it renders the badge and the panels with the React the interface already ships.
+- **Bundle layer** (`cordis.patch.yml`) adds the plugin row to the profile; `locale/*.json` and `icon.svg` provide the localization and the icon.
+
+Stack: plain JavaScript (ESM), no bundler, no transpilation, no dependencies — React, routing, storage and the credential store are provided by DSH itself. The whole repository is a handful of files you can read end to end.
+
+## About tokens
+
+The plugin never talks to a language model: it does not prompt an LLM and does not run the agent. Using it **spends no DeepSeek tokens** — not for the badge, not for the panel, not for logging time. The only outbound calls go to the Yandex Tracker API and, with a calendar connected, to Yandex Calendar CalDAV, and they leave the host process rather than the page.
+
 ## Features
 
 - **Rail badge** — today's total; it turns green once the daily target is reached (8 hours by default).
