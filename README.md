@@ -135,6 +135,7 @@ https://oauth.yandex.ru/authorize?response_type=token&client_id=ИДЕНТИФИ
 | Delayed refresh, seconds | `3` | Пауза перед перечитыванием списка после добавления или удаления |
 | Poll interval, minutes | `5` | Как часто панель сама перечитывает Трекер |
 | Event comment prefix | `Встреча: ` | Что подставляется перед темой встречи в комментарии |
+| Task list query | `"Status Type": !done Assignee: me() "Sort by": Updated DESC` | Запрос Трекера, которым форма ищет «мои текущие задачи» |
 | Organization id | — | `X-Org-ID` (или `X-Cloud-Org-ID`) |
 | Tracker login | из токена | Логин в организации; пусто — определится через `/myself` |
 | OAuth token | — | Токен Трекера; только через окно настроек, из YAML не читается |

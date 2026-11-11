@@ -133,6 +133,7 @@ Every value below is stored in the profile; no YAML editing is required.
 | Delayed refresh, seconds | `3` | Pause before re-reading the list after an add or delete |
 | Poll interval, minutes | `5` | How often the panel re-reads Tracker in the background |
 | Event comment prefix | `Встреча: ` | Text put before an event title in the comment |
+| Task list query | `"Status Type": !done Assignee: me() "Sort by": Updated DESC` | The Tracker query the task picker searches with |
 | Organization id | — | `X-Org-ID` (or `X-Cloud-Org-ID`) |
 | Tracker login | from the token | Login inside the organization; empty means resolved via `/myself` |
 | OAuth token | — | The Tracker token; settings window only, never read from YAML |
