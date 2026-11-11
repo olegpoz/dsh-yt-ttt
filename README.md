@@ -6,6 +6,10 @@
 
 <p align="center"><b>Time Tracked Today</b> — списанное за сегодня время в Яндекс Трекере прямо в боковой панели DeepSeek Harness.</p>
 
+<p align="center">
+  <a href="https://github.com/olegpoz/dsh-yt-ttt/actions/workflows/test.yml"><img src="https://github.com/olegpoz/dsh-yt-ttt/actions/workflows/test.yml/badge.svg" alt="tests"></a>
+</p>
+
 Плагин показывает в рельсе сайдбара, сколько времени ты уже списал за сегодня, и по клику открывает панель с итогами за сегодня и вчера, списком записей и формой добавления нового списания — без переключения в браузер.
 
 ## Как устроено

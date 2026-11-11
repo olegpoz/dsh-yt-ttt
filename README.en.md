@@ -6,6 +6,10 @@
 
 <p align="center"><b>Time Tracked Today</b> — the time logged in Yandex Tracker today, right in the DeepSeek Harness sidebar.</p>
 
+<p align="center">
+  <a href="https://github.com/olegpoz/dsh-yt-ttt/actions/workflows/test.yml"><img src="https://github.com/olegpoz/dsh-yt-ttt/actions/workflows/test.yml/badge.svg" alt="tests"></a>
+</p>
+
 The plugin shows how much time you have already logged today in the sidebar rail and, on click, opens a panel with today's and yesterday's totals, the worklog list, and a form for logging new time — without switching to the browser.
 
 ## How it works
