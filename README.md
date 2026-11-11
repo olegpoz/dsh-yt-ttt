@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="icon.svg" alt="" width="72" height="72">
+  <img src="docs/panel.png" alt="Панель плагина: итоги за сегодня и вчера, список записей и кнопка добавления" width="760">
 </p>
 
 <h1 align="center">dsh-yt-ttt</h1>

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="icon.svg" alt="" width="72" height="72">
+  <img src="docs/panel.png" alt="The plugin panel: today's and yesterday's totals, the worklog list and the add button" width="760">
 </p>
 
 <h1 align="center">dsh-yt-ttt</h1>
