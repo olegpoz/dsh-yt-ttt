@@ -1,9 +1,9 @@
-/**
+﻿/**
  * Host half of the "Yandex Tracker logged today" badge.
  *
  * Owns the two operations the badge needs: sum the durations of the worklogs the
  * configured user started today, in the configured time zone, and add one new
- * worklog for that user. The Tracker token never leaves this process РІР‚вЂќ the
+ * worklog for that user. The Tracker token never leaves this process Р Р†Р вЂљРІР‚Сњ the
  * browser half only talks to the plugin's authenticated Web routes, so the page
  * never holds a credential and never talks to Tracker directly.
  *
@@ -357,7 +357,7 @@ function wallClockStamp(timeZone, value) {
 	const raw = text(value);
 	if (raw === '') return null;
 	// A value that already names its zone is used as-is; Tracker wants the
-	// `Р’В±hhmm` form, so a `Z` suffix becomes `+0000`.
+	// `Р вЂ™Р’В±hhmm` form, so a `Z` suffix becomes `+0000`.
 	if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:?\d{2})$/u.test(raw)) {
 		const at = new Date(raw);
 		return Number.isNaN(at.getTime()) ? null : at.toISOString().replace(/Z$/u, '+0000');
@@ -417,7 +417,7 @@ function isoDuration(minutes) {
  * Validate and normalize one add-worklog request.
  *
  * A key made only of digits is expanded with the configured default queue, so
- * `426` becomes `INTWORK-426`; the form does the same before sending, and this
+ * `426` becomes `MYQUEUE-426`; the form does the same before sending, and this
  * keeps the shorthand working for any other caller.
  * @param payload - the parsed request body.
  * @param config - normalized configuration (zone and default queue).
@@ -815,7 +815,7 @@ async function readTask(config, key) {
 function isClosedTask(task) {
 	const statusKey = typeof task?.statusKey === 'string' ? task.statusKey.trim().toLowerCase() : '';
 	const status = typeof task?.status === 'string' ? task.status.trim().toLowerCase() : '';
-	return statusKey === 'closed' || status === 'закрыт' || status === 'closed';
+	return statusKey === 'closed' || status === 'Р·Р°РєСЂС‹С‚' || status === 'closed';
 }
 
 // --- Yandex Calendar (CalDAV) ------------------------------------------------
@@ -1232,8 +1232,8 @@ async function fetchCalendarEvents(config, date, calendars) {
 /**
  * Read the issues the current work is booked against.
  *
- * One page is what a picker needs РІР‚вЂќ the list is scanned by eye, not paged
- * through РІР‚вЂќ so the search asks for the API's largest page and stops there.
+ * One page is what a picker needs Р Р†Р вЂљРІР‚Сњ the list is scanned by eye, not paged
+ * through Р Р†Р вЂљРІР‚Сњ so the search asks for the API's largest page and stops there.
  * @param config - normalized configuration.
  * @returns the tasks, most recently updated first.
  */
@@ -1328,7 +1328,7 @@ function withGaps(worklogs, workdayStart = WORKDAY_START_MINUTES, workdayEnd = W
 	let anyPlaced = false;
 	for (const row of placed) {
 		// Anything uncovered before this record is unbooked. The leading stretch has
-		// no threshold РІР‚вЂќ the day simply starts late РІР‚вЂќ while a break between two
+		// no threshold Р Р†Р вЂљРІР‚Сњ the day simply starts late Р Р†Р вЂљРІР‚Сњ while a break between two
 		// records only becomes a row once it is longer than the threshold.
 		const threshold = anyPlaced ? GAP_THRESHOLD_MINUTES : 0;
 		if (row.startMinutes > cursor && row.startMinutes - cursor > threshold) {
@@ -1380,7 +1380,7 @@ async function sumWorklogs(config, login, range) {
 				minutes: rowMinutes,
 				hours: formatMinutes(rowMinutes),
 				// Tracker's web form puts the key straight under the host
-				// (`tracker.yandex.ru/INTWORK-426`); the `/issues/` segment belongs to
+				// (`tracker.yandex.ru/MYQUEUE-426`); the `/issues/` segment belongs to
 				// the API, and a web link carrying it does not resolve.
 				issueUrl: text(row.issue?.key) === '' ? myPageUrl(config) : `${config.webBase}/${text(row.issue.key)}`,
 			});
@@ -1441,7 +1441,7 @@ async function summarize(config) {
 		login,
 		date: range.date,
 		// Yesterday, as the second plate needs it: its own total, count, plain date,
-		// whether it fell on a weekend (which colouring depends on), and its rows РІР‚вЂќ
+		// whether it fell on a weekend (which colouring depends on), and its rows Р Р†Р вЂљРІР‚Сњ
 		// already read above, so switching the list to yesterday costs no new call.
 		yesterday: {
 			minutes: yesterday.minutes,
@@ -1561,7 +1561,7 @@ export function apply(ctx, rawConfig) {
 	 *
 	 * The unit is a plain key-value document under the profile's `storages`
 	 * directory, so the pinned task survives browser restarts and a GUI opened in
-	 * another browser вЂ” it belongs to the profile, not to one origin.
+	 * another browser РІР‚вЂќ it belongs to the profile, not to one origin.
 	 * @returns the opened unit.
 	 */
 	const openTeamworkStore = async () => {

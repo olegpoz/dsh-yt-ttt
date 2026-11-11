@@ -1,10 +1,10 @@
-/**
+﻿/**
  * Coverage for the two write routes the panel calls: adding a worklog from the
  * "Adding time" form and deleting one from a record row's delete control.
  *
  * A mock Tracker stands in for the real API, so the request shape Tracker
- * receives вЂ” issue path, offset-bearing start, ISO duration, comment, record id
- * вЂ” is checked without touching the live service. The validation and failure
+ * receives РІР‚вЂќ issue path, offset-bearing start, ISO duration, comment, record id
+ * РІР‚вЂќ is checked without touching the live service. The validation and failure
  * paths are driven the same way.
  */
 import { createServer } from 'node:http';
@@ -35,7 +35,7 @@ const TRACKER = createServer((req, res) => {
 		if (req.method === 'POST' && /^\/issues\/[^/]+\/worklog$/u.test(req.url)) {
 			if (writeAnswer === 'forbidden') {
 				res.statusCode = 403;
-				res.end(JSON.stringify({ errorMessages: ['РќРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ РїСЂР°РІ'] }));
+				res.end(JSON.stringify({ errorMessages: ['Р СњР ВµР Т‘Р С•РЎРѓРЎвЂљР В°РЎвЂљР С•РЎвЂЎР Р…Р С• Р С—РЎР‚Р В°Р Р†'] }));
 				return;
 			}
 			res.statusCode = 201;
@@ -59,7 +59,7 @@ const TRACKER = createServer((req, res) => {
 		if (req.method === 'DELETE' && /^\/issues\/[^/]+\/worklog\/[^/]+$/u.test(req.url)) {
 			if (deleteAnswer === 'forbidden') {
 				res.statusCode = 403;
-				res.end(JSON.stringify({ errorMessages: ['РќРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ РїСЂР°РІ'] }));
+				res.end(JSON.stringify({ errorMessages: ['Р СњР ВµР Т‘Р С•РЎРѓРЎвЂљР В°РЎвЂљР С•РЎвЂЎР Р…Р С• Р С—РЎР‚Р В°Р Р†'] }));
 				return;
 			}
 			// Tracker answers a successful delete with 204 and no body.
@@ -84,7 +84,7 @@ const TRACKER = createServer((req, res) => {
 			const closed = key === 'CLOSED-1';
 			res.end(JSON.stringify({
 				key, summary: `Task ${key}`,
-				status: { key: closed ? 'closed' : 'open', display: closed ? 'Р—Р°РєСЂС‹С‚' : 'Open' },
+				status: { key: closed ? 'closed' : 'open', display: closed ? 'Р вЂ”Р В°Р С”РЎР‚РЎвЂ№РЎвЂљ' : 'Open' },
 				updatedAt: '2026-11-09T10:00:00.000+0000',
 			}));
 			return;
@@ -174,7 +174,7 @@ const taskSent = seen.at(-1);
 const missingTask = await call(taskRoute, { method: 'GET', url: '/yandex-tracker-today/task?key=UNKNOWN-1' });
 
 const digitsRoute = mount({
-	token: 'test-token', orgId: '1234567', timeZone: 'Europe/Moscow', defaultQueue: 'INTWORK',
+	token: 'test-token', orgId: '1234567', timeZone: 'Europe/Moscow', defaultQueue: 'MYQUEUE',
 }).get('/yandex-tracker-today/worklog');
 const digits = await call(digitsRoute, { body: { ...base, key: '426', spent: '1:00' } });
 const digitsSent = seen.at(-1);
@@ -218,7 +218,7 @@ const checks = [
 	['a missing key is refused', (await call(add, { body: { ...base, key: '  ' } })).body.message.includes('Task key')],
 	['a key without a number is refused', (await call(add, { body: { ...base, key: 'ABC' } })).status === 400],
 	['a digits-only key is expanded with the default queue', digits.status === 200 && digits.body.ok === true],
-	['the expanded key reaches Tracker', digitsSent.url === '/issues/INTWORK-426/worklog'],
+	['the expanded key reaches Tracker', digitsSent.url === '/issues/MYQUEUE-426/worklog'],
 	['a digits-only key without a queue is refused', digitsWithoutQueue.status === 400],
 	['an unreadable duration is refused', (await call(add, { body: { ...base, spent: 'soon' } })).status === 400],
 	['a zero duration is refused', (await call(add, { body: { ...base, spent: '0m' } })).status === 400],
@@ -329,7 +329,7 @@ checks.push([
 	upstreamRefusal.status === 502
 		&& upstreamRefusal.body.ok === false
 		&& upstreamRefusal.body.reason === 'unauthorized'
-		&& upstreamRefusal.body.message.includes('РќРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ РїСЂР°РІ'),
+		&& upstreamRefusal.body.message.includes('Р СњР ВµР Т‘Р С•РЎРѓРЎвЂљР В°РЎвЂљР С•РЎвЂЎР Р…Р С• Р С—РЎР‚Р В°Р Р†'),
 ]);
 checks.push(['the refused request still reached Tracker', seen.slice(before).some((row) => row.method === 'POST'
 	&& /^\/issues\/[^/]+\/worklog$/u.test(row.url))]);
@@ -343,7 +343,7 @@ checks.push([
 	upstreamDeleteRefusal.status === 502
 		&& upstreamDeleteRefusal.body.ok === false
 		&& upstreamDeleteRefusal.body.reason === 'unauthorized'
-		&& upstreamDeleteRefusal.body.message.includes('РќРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ РїСЂР°РІ'),
+		&& upstreamDeleteRefusal.body.message.includes('Р СњР ВµР Т‘Р С•РЎРѓРЎвЂљР В°РЎвЂљР С•РЎвЂЎР Р…Р С• Р С—РЎР‚Р В°Р Р†'),
 ]);
 
 // ---- the summary cache is invalidated by a write --------------------------
