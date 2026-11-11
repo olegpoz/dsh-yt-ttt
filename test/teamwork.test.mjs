@@ -194,6 +194,10 @@ const settingsBadPoll = await callSettings({ method: 'POST', body: { pollInterva
 const settingsPoll = await callSettings({ method: 'POST', body: { pollIntervalMinutes: 15 } });
 const settingsPollRecord = unit.records.get('pluginSettings');
 const settingsPollRead = await callSettings();
+const settingsQuery = await callSettings({ method: 'POST', body: { tasksQuery: 'Assignee: me()' } });
+const settingsQueryRecord = unit.records.get('pluginSettings');
+const settingsQueryRead = await callSettings();
+const settingsBadQuery = await callSettings({ method: 'POST', body: { tasksQuery: '   ' } });
 const settingsSecrets = await callSettings({
 	method: 'POST',
 	body: { orgId: '42', login: 'ivanov', token: 'y0_new', calendarPassword: 'app-pass' },
@@ -393,6 +397,12 @@ const checks = [
 		&& settingsBadPoll.body.reason === 'invalid'],
 	['the poll interval is stored and read back', settingsPollRecord.pollIntervalMinutes === 15
 		&& settingsPollRead.body.settings.pollIntervalMinutes === 15],
+	['the default task query is exposed', settingsDefault.body.settings.tasksQuery
+		=== '"Status Type": !done Assignee: me() "Sort by": Updated DESC'],
+	['a custom task query is stored and read back', settingsQueryRecord.tasksQuery === 'Assignee: me()'
+		&& settingsQueryRead.body.settings.tasksQuery === 'Assignee: me()'],
+	['an empty task query is refused', settingsBadQuery.status === 400
+		&& settingsBadQuery.body.reason === 'invalid'],
 	['the connection status follows the stored values', settingsSecretsRead.body.connection.hasToken === true
 		&& settingsSecretsRead.body.connection.orgId === '42'
 		&& settingsSecretsRead.body.connection.login === 'ivanov'

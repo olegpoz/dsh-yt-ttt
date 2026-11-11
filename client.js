@@ -138,6 +138,9 @@ const TEST_URL = '/yandex-tracker-today/test';
 			'panel.defaultDurationTooLong': 'Default duration cannot exceed the maximum duration.',
 			'panel.eventPrefixHint': 'Text put before the event title when a calendar event fills the comment.',
 			'panel.eventPrefixInvalid': 'Event comment prefix must be at most 200 characters.',
+			'panel.tasksQuery': 'Task list query',
+			'panel.tasksQueryHint': 'Tracker query the "Your current tasks" picker searches with.',
+			'panel.tasksQueryInvalid': 'The task query must be non-empty text, at most 2000 characters.',
 			'panel.calendarLogin': 'Calendar login',
 			'panel.calendarLoginHint': 'CalDAV login, usually the full email address.',
 			'panel.calendarPassword': 'Calendar app password',
@@ -1096,6 +1099,8 @@ const TEST_URL = '/yandex-tracker-today/test';
 		const DEFAULT_POLL_INTERVAL_MINUTES = 5;
 		/** The largest poll interval the settings accept, in minutes. */
 		const MAX_POLL_INTERVAL_MINUTES = 60;
+		/** The default Tracker query the task picker searches with. */
+		const DEFAULT_TASKS_QUERY = '"Status Type": !done Assignee: me() "Sort by": Updated DESC';
 
 		/**
 		 * A time of day as `HH:MM`.
@@ -1445,6 +1450,7 @@ const TEST_URL = '/yandex-tracker-today/test';
 								? duration
 								: DEFAULT_DEFAULT_DURATION_MINUTES,
 							eventCommentPrefix: text(settings.eventCommentPrefix, DEFAULT_EVENT_COMMENT_PREFIX),
+							tasksQuery: text(settings.tasksQuery, DEFAULT_TASKS_QUERY).trim() || DEFAULT_TASKS_QUERY,
 							pollIntervalMinutes: Number.isInteger(poll) && poll >= 1 && poll <= MAX_POLL_INTERVAL_MINUTES
 								? poll
 								: DEFAULT_POLL_INTERVAL_MINUTES,
@@ -2343,12 +2349,18 @@ const TEST_URL = '/yandex-tracker-today/test';
 					setError(t('panel.eventPrefixInvalid'));
 					return;
 				}
+				const query = typeof draft.tasksQuery === 'string' ? draft.tasksQuery.trim() : '';
+				if (query === '' || query.length > 2000) {
+					setError(t('panel.tasksQueryInvalid'));
+					return;
+				}
 				const payload = {
 					durationChange: draft.durationChange === 'start' ? 'start' : 'end',
 					maxDurationHours: hours,
 					defaultQueue: draft.defaultQueue.trim(),
 					defaultDurationMinutes: duration,
 					eventCommentPrefix: draft.eventCommentPrefix,
+					tasksQuery: query,
 				};
 				setSaving(true);
 				setError(null);
@@ -2381,6 +2393,15 @@ const TEST_URL = '/yandex-tracker-today/test';
 				]),
 			] : [
 				h('h2', { key: 'title', id: 'ytt-adding-settings-title' }, t('panel.addingSettings')),
+				SettingsField({
+					id: 'ytt-tasks-query', label: t('panel.tasksQuery'), hint: t('panel.tasksQueryHint'),
+					children: h('input', {
+						key: 'input', id: 'ytt-tasks-query', className: 'ytt-input', type: 'text',
+						value: draft.tasksQuery ?? DEFAULT_TASKS_QUERY, disabled: saving,
+						spellCheck: false, autoComplete: 'off',
+						onChange: (event) => setField('tasksQuery', event.target.value),
+					}),
+				}),
 				SettingsField({
 					id: 'ytt-duration-mode', label: t('panel.whenDurationChanged'),
 					hint: t('panel.whenDurationChangedHint'),
@@ -2636,6 +2657,7 @@ const TEST_URL = '/yandex-tracker-today/test';
 			// from the host settings.
 			const [durationMode, setDurationMode] = React.useState(DEFAULT_DURATION_CHANGE);
 			const [maxDurationHours, setMaxDurationHours] = React.useState(DEFAULT_MAX_DURATION_HOURS);
+			const [tasksQuery, setTasksQuery] = React.useState(DEFAULT_TASKS_QUERY);
 			// Whether the Adding time settings window is open over this dialog.
 			const [settingsOpen, setSettingsOpen] = React.useState(false);
 			// Whether the add-form settings arrived; a failure shows a retry in the
@@ -2667,6 +2689,7 @@ const TEST_URL = '/yandex-tracker-today/test';
 					setSettingsLoaded(true);
 					setDurationMode(result.settings.durationChange);
 					setMaxDurationHours(result.settings.maxDurationHours);
+					setTasksQuery(result.settings.tasksQuery);
 				});
 				return () => { cancelled = true; };
 			}, []);
@@ -3116,12 +3139,14 @@ const TEST_URL = '/yandex-tracker-today/test';
 							defaultQueue,
 							defaultDurationMinutes,
 							eventCommentPrefix,
+							tasksQuery,
 						} : null,
 						loadError: settingsError,
 						onRetry: loadAddingSettings,
 						onSave: (payload) => savePluginSettings(payload).then(({ settings: stored }) => {
 							setDurationMode(stored.durationChange === 'start' ? 'start' : 'end');
 							setMaxDurationHours(stored.maxDurationHours);
+							setTasksQuery(stored.tasksQuery ?? DEFAULT_TASKS_QUERY);
 							setSettingsOpen(false);
 							if (typeof onSettingsSaved === 'function') onSettingsSaved();
 						}),

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Coverage for the two write routes the panel calls: adding a worklog from the
  * "Adding time" form and deleting one from a record row's delete control.
  *
@@ -179,6 +179,11 @@ const digitsRoute = mount({
 const digits = await call(digitsRoute, { body: { ...base, key: '426', spent: '1:00' } });
 const digitsSent = seen.at(-1);
 const digitsWithoutQueue = await call(add, { body: { ...base, key: '426' } });
+const queryRoute = mount({
+	token: 'test-token', orgId: '1234567', timeZone: 'Europe/Moscow', tasksQuery: 'Assignee: me()',
+}).get('/yandex-tracker-today/tasks');
+const queryTasks = await call(queryRoute, { method: 'GET' });
+const customQuery = JSON.parse(seen.at(-1).body).query;
 const closedTask = await call(add, { body: { ...base, key: 'CLOSED-1' } });
 const futureStart = await call(add, { body: { ...base, start: '2099-01-01T10:00' } });
 
@@ -244,9 +249,8 @@ const checks = [
 		&& tasks.body.tasks[0].summary === 'Fix the thing'
 		&& tasks.body.tasks[0].status === 'Open'],
 	['a task links to Tracker', tasks.body.tasks[0].url === 'https://tracker.example/ABC-1'],
-	['the picker query is the agreed filter', taskQuery.includes('"Status Type": !done')
-		&& taskQuery.includes('Assignee: me()')
-		&& taskQuery.includes('Sort by": Updated DESC')],
+	['the picker query is the agreed filter', taskQuery === '"Status Type": !done Assignee: me() "Sort by": Updated DESC'],
+	['the picker uses a configured task query', queryTasks.body.ok === true && customQuery === 'Assignee: me()'],
 	['the task list is cached between openings', tasksAgain.body.ok === true && taskSearches === 1],
 	['POST on the task route is refused', (await call(tasksRoute, { method: 'POST' })).status === 405],
 

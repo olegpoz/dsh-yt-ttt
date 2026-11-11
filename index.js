@@ -162,6 +162,7 @@ function normalizeConfig(raw) {
 		eventCommentPrefix: typeof source.eventCommentPrefix === 'string'
 			? source.eventCommentPrefix
 			: (typeof source.meetingCommentPrefix === 'string' ? source.meetingCommentPrefix : DEFAULT_EVENT_COMMENT_PREFIX),
+		tasksQuery: text(source.tasksQuery) || DEFAULT_TASKS_QUERY,
 		calendarLogin: text(source.calendarLogin),
 		calendarPassword: '',
 		calendarUrl: (text(source.calendarUrl) || DEFAULT_CALENDAR_URL).replace(/\/+$/u, ''),
@@ -591,8 +592,7 @@ async function deleteWorklog(config, issueKey, id) {
  * language spells the clauses; the host passes them through unchanged so the
  * filter stays one readable string rather than a set of API parameters.
  */
-const CURRENT_TASKS_QUERY = '"Status Type": !done Assignee: me() Status: !reviewcode'
-	+ ' Status: !architecturealignment Status: !podklucennoeRassirenie "Sort by": Updated DESC';
+const DEFAULT_TASKS_QUERY = '"Status Type": !done Assignee: me() "Sort by": Updated DESC';
 
 /**
  * Map one Tracker issue record onto the row the picker renders.
@@ -716,6 +716,9 @@ const SETTINGS_FIELDS = {
 	eventCommentPrefix: (value) => (typeof value === 'string' && value.length <= 200
 		? { value }
 		: { error: 'eventCommentPrefix must be short text.' }),
+	tasksQuery: (value) => (typeof value === 'string' && value.trim() !== '' && value.length <= 2000
+		? { value: value.trim() }
+		: { error: 'tasksQuery must be non-empty text, at most 2000 characters.' }),
 	orgId: (value) => (typeof value === 'string' && value.trim() !== ''
 		? { value: value.trim() }
 		: { error: 'orgId must be non-empty text.' }),
@@ -742,6 +745,7 @@ function storedPluginSettings(value, config) {
 	const prefix = typeof source.eventCommentPrefix === 'string'
 		? source.eventCommentPrefix
 		: (typeof source.meetingCommentPrefix === 'string' ? source.meetingCommentPrefix : null);
+	const tasksQuery = typeof source.tasksQuery === 'string' ? source.tasksQuery.trim() : '';
 	const token = typeof source.token === 'string' && source.token.trim() !== '' ? source.token.trim() : null;
 	const orgId = typeof source.orgId === 'string' ? source.orgId.trim() : null;
 	const trackerLogin = typeof source.login === 'string' ? source.login.trim() : null;
@@ -767,6 +771,7 @@ function storedPluginSettings(value, config) {
 			? duration
 			: config.defaultDurationMinutes,
 		eventCommentPrefix: prefix ?? config.eventCommentPrefix,
+		tasksQuery: tasksQuery !== '' ? tasksQuery : config.tasksQuery,
 		pollIntervalMinutes: Number.isInteger(poll) && poll >= 1 && poll <= MAX_POLL_INTERVAL_MINUTES
 			? poll
 			: DEFAULT_POLL_INTERVAL_MINUTES,
@@ -1240,7 +1245,7 @@ async function fetchCalendarEvents(config, date, calendars) {
 async function searchCurrentTasks(config) {
 	const { body } = await trackerRequest(config, `/issues/_search?perPage=${PAGE_SIZE}`, {
 		method: 'POST',
-		body: JSON.stringify({ query: CURRENT_TASKS_QUERY }),
+		body: JSON.stringify({ query: config.tasksQuery }),
 	});
 	const rows = Array.isArray(body) ? body : [];
 	return rows
@@ -1708,6 +1713,7 @@ export function apply(ctx, rawConfig) {
 				dailyTargetHours: settings.dailyTargetHours,
 				defaultDurationMinutes: settings.defaultDurationMinutes,
 				eventCommentPrefix: settings.eventCommentPrefix,
+				tasksQuery: settings.tasksQuery,
 				pollIntervalMinutes: settings.pollIntervalMinutes,
 				calendarLogin: settings.calendarLogin,
 				orgId: settings.orgId,

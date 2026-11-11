@@ -1,4 +1,4 @@
-﻿// Unit checks for the client's pure helpers: the settings parser, the initial
+// Unit checks for the client's pure helpers: the settings parser, the initial
 // clock, the refresh gate and the zone clock. The client ships as a single
 // loader module, so the test evaluates its source with a fake loader and asks
 // the factory for a test-only export.
@@ -116,6 +116,7 @@ sandbox.fetch = async () => answer({
 		orgId: ' 1 ',
 		login: 'u',
 		calendarLogin: 'c',
+		tasksQuery: '   ',
 	},
 	connection: { hasToken: true, hasCalendarPassword: true, orgId: '1', login: 'u' },
 });
@@ -130,6 +131,8 @@ check('text fields are trimmed', clamped.settings.defaultQueue === 'Q'
 check('the zone survives', clamped.settings.timeZone === 'Europe/Moscow');
 check('the connection flags survive', clamped.connection.hasToken === true
 	&& clamped.connection.hasCalendarPassword === true);
+check('an empty task query falls back to the default',
+	clamped.settings.tasksQuery === '"Status Type": !done Assignee: me() "Sort by": Updated DESC');
 
 sandbox.fetch = async () => answer({
 	ok: true,
@@ -137,6 +140,7 @@ sandbox.fetch = async () => answer({
 		durationChange: 'end', maxDurationHours: 4, refreshDelaySeconds: 9, pollIntervalMinutes: 15,
 		timeZone: 'UTC', workdayStart: '10:00', workdayEnd: '18:00', dailyTargetHours: 7.5,
 		defaultDurationMinutes: 30, eventCommentPrefix: 'Sync: ', orgId: '9', login: '',
+		tasksQuery: 'Assignee: me()',
 	},
 	connection: { hasToken: false, hasCalendarPassword: false, orgId: '9', login: '' },
 });
@@ -145,7 +149,8 @@ check('valid settings pass through', valid.ok === true
 	&& valid.settings.maxDurationHours === 4
 	&& valid.settings.pollIntervalMinutes === 15
 	&& valid.settings.dailyTargetHours === 7.5
-	&& valid.settings.defaultDurationMinutes === 30);
+	&& valid.settings.defaultDurationMinutes === 30
+	&& valid.settings.tasksQuery === 'Assignee: me()');
 
 sandbox.fetch = async () => answer({ ok: false, message: 'storage down' }, 500);
 const failed = await test.fetchPluginSettings();
